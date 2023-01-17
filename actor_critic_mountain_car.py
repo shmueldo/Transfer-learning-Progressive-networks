@@ -128,7 +128,7 @@ class ValueNetwork:
                 self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.loss)
 
 def run(discount_factor: float, policy_learning_rate: float ,sv_learning_rate: float,
-        env_name: str, desired_goal=475, action_space= [0, 1, 2], max_steps = 501,
+        env_name: str, desired_goal=475, max_steps = 501,
         fine_tuning = False, weights_owner_env = None, save_weights = False):
     # Assign seed for repetitive randomness
     np.random.seed(SEED)
@@ -270,30 +270,21 @@ if __name__ == '__main__':
     SEED = 42
     env_name = 'MountainCarContinuous-v0'
     
-    optimal_sv_lr = {'CartPole-v1' : 0.003, 'Acrobot-v1' : 0.0005, 'MountainCarContinuous-v0' : 5e-5}
-    optimal_policy_lr = {'CartPole-v1' : 0.003, 'Acrobot-v1' : 0.0005, 'MountainCarContinuous-v0' : 0.0002}
-    optimal_df = {'CartPole-v1' : 0.99, 'Acrobot-v1' : 0.99, 'MountainCarContinuous-v0' : 0.99}
-    env_goal      = {'CartPole-v1' : 475, 'Acrobot-v1'  : -90, 'MountainCarContinuous-v0' : 75}
-    max_steps      = {'CartPole-v1' : 501, 'Acrobot-v1'  : 501, 'MountainCarContinuous-v0' : 1000}
-    actions_space = {'CartPole-v1' : [0, 1], 'Acrobot-v1' : [0, 1, 2],
-                     'MountainCarContinuous-v0' : np.linspace(-1, 1, 32)}
-    
-    # TODO: Dont forget to add 0.00001, 0.00005 to list when plotting
-    # for lr in [0.00001, 0.00005, 0.00004, 0.00006, 0.00007 ,0.00009, 0.0001, 0.0002, 0.0004, 0.0005, 0.0006, 0.0007, 0.0009, 0.001, 0.003, 0.005, 0.007, 0.01]:                                                    
-    # for lr in [0.00001, 0.00005, 0.00004, 0.00006, 0.00007 ,0.00009, 0.0001, 0.0002, 0.0004, 0.0005, 0.0006, 0.0007, 0.0009, 0.001, 0.003, 0.005, 0.007, 0.01]:                                                    
-    for lr in [0.00005]:
-    # TODO: Run it with sv = 5e-5                                                  
-        last_episode, rewards, mean_rewards, losses = run(env_name=env_name,
-                                                            discount_factor=optimal_df[env_name],
-                                                            policy_learning_rate=optimal_policy_lr[env_name],
-                                                            sv_learning_rate=optimal_sv_lr[env_name], 
-                                                            desired_goal=env_goal[env_name],
-                                                            action_space=actions_space[env_name],
-                                                            max_steps=max_steps[env_name],
-                                                            fine_tuning = False, weights_owner_env = 'Acrobot-v1',
-                                                            save_weights = True)
-        with open(os.getcwd() + '\simulations\{}\{}_optimal_simulation.npy'.format(env_name, env_name), 'wb') as f:
-            np.save(f, last_episode)
-            np.save(f, rewards)
-            np.save(f, mean_rewards)
-            np.save(f, losses)
+    optimal_sv_lr = {'MountainCarContinuous-v0' : 5e-5}
+    optimal_policy_lr = {'MountainCarContinuous-v0' : 0.0002}
+    optimal_df = {'MountainCarContinuous-v0' : 0.99}
+    env_goal      = {'MountainCarContinuous-v0' : 75}
+    max_steps      = {'MountainCarContinuous-v0' : 1000}                                              
+    last_episode, rewards, mean_rewards, losses = run(env_name=env_name,
+                                                        discount_factor=optimal_df[env_name],
+                                                        policy_learning_rate=optimal_policy_lr[env_name],
+                                                        sv_learning_rate=optimal_sv_lr[env_name], 
+                                                        desired_goal=env_goal[env_name],
+                                                        max_steps=max_steps[env_name],
+                                                        fine_tuning = False, weights_owner_env = None,
+                                                        save_weights = True)
+    with open(os.getcwd() + '\simulations\{}\{}_optimal_simulation.npy'.format(env_name, env_name), 'wb') as f:
+        np.save(f, last_episode)
+        np.save(f, rewards)
+        np.save(f, mean_rewards)
+        np.save(f, losses)

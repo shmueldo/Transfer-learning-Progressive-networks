@@ -273,30 +273,26 @@ if __name__ == '__main__':
     SEED = 42
     # env_name = 'CartPole-v1'
     env_name = 'Acrobot-v1'
-    # env_name = 'MountainCarContinuous-v0'
     
     optimal_sv_lr = {'CartPole-v1' : 0.002, 'Acrobot-v1' : 0.002, 'MountainCarContinuous-v0' :  5e-5}
-    optimal_policy_lr = {'CartPole-v1' : 0.0008, 'Acrobot-v1' : 0.0006, 'MountainCarContinuous-v0' : 0.004} #0.0005
+    optimal_policy_lr = {'CartPole-v1' : 0.0008, 'Acrobot-v1' : 0.0006, 'MountainCarContinuous-v0' : 0.004}
     optimal_df = {'CartPole-v1' : 0.99, 'Acrobot-v1' : 0.99, 'MountainCarContinuous-v0' : 0.99}
     env_goal      = {'CartPole-v1' : 475, 'Acrobot-v1'  : -90, 'MountainCarContinuous-v0' : 75}
     max_steps      = {'CartPole-v1' : 501, 'Acrobot-v1'  : 501, 'MountainCarContinuous-v0' : 1000}
-    actions_space = {'CartPole-v1' : [0, 1], 'Acrobot-v1' : [0, 1, 2],
-                     'MountainCarContinuous-v0' : np.linspace(-1, 1, 2)}
-    # for lr in [0.00001]:                                                                                        
-    # for lr in [0.0004, 0.0005, 0.0006, 0.0007, 0.0009, 0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.0008, 0.009, 0.01, 0.02, 0.03, 0.05]:                                                                                        
-    for lr in [0.00005]:                                                                                        
-        last_episode, rewards, mean_rewards, losses = run(env_name=env_name,
-                                                            discount_factor=optimal_df[env_name],
-                                                            policy_learning_rate=0.0009,
-                                                            sv_learning_rate=0.004,
-                                                            desired_goal=env_goal[env_name],
-                                                            action_space=actions_space[env_name],
-                                                            max_steps=max_steps[env_name],
-                                                            fine_tuning = False,
-                                                            weights_owner_env = 'Acrobot-v1',
-                                                            save_weights = False)
-        with open(os.getcwd() + '\simulationsQ2\{}\{}_policy_sim_lr={}.npy'.format(env_name, env_name, lr), 'wb') as f:
-            np.save(f, last_episode)
-            np.save(f, rewards)
-            np.save(f, mean_rewards)
-            np.save(f, losses)
+    actions_space = {'CartPole-v1' : [0, 1], 'Acrobot-v1' : [0, 1, 2]}                                                                                  
+    
+    last_episode, rewards, mean_rewards, losses = run(env_name=env_name,
+                                                        discount_factor=optimal_df[env_name],
+                                                        policy_learning_rate=optimal_policy_lr[env_name],
+                                                        sv_learning_rate=optimal_sv_lr[env_name],
+                                                        desired_goal=env_goal[env_name],
+                                                        action_space=actions_space[env_name],
+                                                        max_steps=max_steps[env_name],
+                                                        fine_tuning = False,
+                                                        weights_owner_env = 'Acrobot-v1',
+                                                        save_weights = False)
+    with open(os.getcwd() + '\simulations\{}\{}_optimal_simulation.npy'.format(env_name, env_name), 'wb') as f:
+        np.save(f, last_episode)
+        np.save(f, rewards)
+        np.save(f, mean_rewards)
+        np.save(f, losses)

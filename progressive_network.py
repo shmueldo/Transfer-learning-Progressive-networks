@@ -547,32 +547,20 @@ if __name__ == '__main__':
     SEED = 42
     # env_name = 'MountainCarContinuous-v0'
     env_name = 'CartPole-v1'
+    
     env_run_func = {"CartPole-v1" : run_cartpole,
                     'MountainCarContinuous-v0' : run_mountain_car}
-    optimal_sv_lr = {'CartPole-v1' : 0.003, 'Acrobot-v1' : 0.0005, 'MountainCarContinuous-v0' : 0.005}
-    optimal_policy_lr = {'CartPole-v1' : 0.003, 'Acrobot-v1' : 0.0005, 'MountainCarContinuous-v0' : 0.00045}
+    optimal_sv_lr = {'CartPole-v1' : 0.0051, 'MountainCarContinuous-v0' : 0.005}
+    optimal_policy_lr = {'CartPole-v1' : 0.00048, 'MountainCarContinuous-v0' : 0.00045}
     optimal_df = {'CartPole-v1' : 0.99, 'Acrobot-v1' : 0.99, 'MountainCarContinuous-v0' : 0.99}
     env_goal      = {'CartPole-v1' : 475, 'Acrobot-v1'  : -90, 'MountainCarContinuous-v0' : 75}
     max_steps      = {'CartPole-v1' : 501, 'Acrobot-v1'  : 501, 'MountainCarContinuous-v0' : 1000}
-    actions_space = {'CartPole-v1' : [0, 1], 'Acrobot-v1' : [0, 1, 2],
-                     'MountainCarContinuous-v0' : np.linspace(-1, 1, 32)}
-    
-    # TODO: Dont forget to add 0.00001, 0.00005 to list when plotting
-    # for lr in [0.00001, 0.00005, 0.00004, 0.00006, 0.00007 ,0.00009, 0.0001, 0.0002, 0.0004, 0.0005, 0.0006, 0.0007, 0.0009, 0.001, 0.003, 0.005, 0.007, 0.01]:                                                    
-
-    for lr in [0.00001, 0.00005, 0.00004, 0.00006, 0.00007 ,0.00009,
-               0.0001, 0.0002, 0.0004, 0.00045, 0.0005, 0.0006, 0.0007, 0.0009,
-               0.001, 0.002, 0.003, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.007, 0.008, 0.01,
-               0.02, 0.03, 0.04, 0.05, 0.07, 0.09]:                                                                                                                                                                                                                                                                                            
-        last_episode, rewards, mean_rewards, losses = env_run_func[env_name](env_name=env_name,
-                                                            discount_factor=optimal_df[env_name],
-                                                            policy_learning_rate=0.0005,
-                                                            sv_learning_rate=lr,
-                                                            desired_goal=env_goal[env_name],
-                                                            action_space=actions_space[env_name],
-                                                            max_steps=max_steps[env_name])
-        with open(os.getcwd() + '\simulations\simulationsQ3\{}\{}_sv_sim_lr={}_policy=0.0005.npy'.format(env_name, env_name, lr), 'wb') as f:
-            np.save(f, last_episode)
-            np.save(f, rewards)
-            np.save(f, mean_rewards)
-            np.save(f, losses)
+    actions_space = {'CartPole-v1' : [0, 1], 'Acrobot-v1' : [0, 1, 2]}
+                                                                                                                                                                                                                                                                                              
+    last_episode, rewards, mean_rewards, losses = env_run_func[env_name](env_name=env_name,
+                                                        discount_factor=optimal_df[env_name],
+                                                        policy_learning_rate=optimal_policy_lr[env_name],
+                                                        sv_learning_rate=optimal_sv_lr[env_name],
+                                                        desired_goal=env_goal[env_name],
+                                                        action_space=actions_space[env_name],
+                                                        max_steps=max_steps[env_name])
